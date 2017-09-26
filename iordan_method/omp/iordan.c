@@ -18,7 +18,8 @@ int main(int argc, char const *argv[]) {
 
   size = SIZE;
   ser_pivot_pos = (int*) malloc(size * sizeof(int));
-  ser_pivot_iter = (int*) malloc(size * sizeof(int));
+  ser_down_pivot_iter = (int*) malloc(size * sizeof(int));
+  ser_up_pivot_iter = (int*) malloc(size * sizeof(int));
   vector = (double*) malloc(size * sizeof(double));
   result = (double*) malloc(size * sizeof(double));
   matrix = (double*) malloc(size * size * sizeof(double*));
@@ -26,7 +27,8 @@ int main(int argc, char const *argv[]) {
   srand(time(NULL));
   for (size_t i = 0; i < size; i++) {
     vector[i] = rand() % 100;
-    ser_pivot_iter[i] = -1;
+    ser_down_pivot_iter[i] = -1;
+    ser_up_pivot_iter[i] = -1;
     for (size_t j = 0; j < size; j++) {
       matrix[i*size + j] = rand() % 100;
     }
@@ -40,6 +42,9 @@ int main(int argc, char const *argv[]) {
 
   // Вызов алгоритма Иордана
   SerialCalculation(matrix, vector, size);
+  // PrintArray(ser_down_pivot_iter, size);
+  // PrintArray(ser_pivot_pos, size);
+  // PrintExtendedMatrix(matrix, vector, size);
   // PrintExtendedTriangleMatrix(matrix, vector, size);
   // PrintTriangleMatrix(matrix, size);
 
