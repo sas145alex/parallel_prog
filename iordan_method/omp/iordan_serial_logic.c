@@ -1,4 +1,4 @@
-int FindPivotRow (double* matrix, int size, int iter) {
+int SerialFindPivotRow (double* matrix, int size, int iter) {
   int pivot_row = -1;
   double max_value = 0;
   for (int i = 0; i < size; i++) {
@@ -45,7 +45,7 @@ void SerialDownElimination(double* matrix, double* vector, int size, int* pivot_
   int iter;
   int pivot_row;
   for (size_t iter = 0; iter < size; iter++) {
-    pivot_row = FindPivotRow(matrix, size, iter);
+    pivot_row = SerialFindPivotRow(matrix, size, iter);
     ser_pivot_pos[iter] = pivot_row;
     pivot_mask[pivot_row] = iter;
     SerialColumnElimination(matrix, vector, size, iter, pivot_row, pivot_mask);
