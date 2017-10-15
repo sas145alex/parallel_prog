@@ -1,5 +1,5 @@
 void PrintVector(double* vector, int size) {
-  for (size_t i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     printf("%f ", vector[i]);
   }
   printf("\n");
@@ -8,7 +8,7 @@ void PrintVector(double* vector, int size) {
 }
 
 void PrintArray(int* array, int size) {
-  for (size_t i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     printf("%d ", array[i]);
   }
   printf("\n");
@@ -17,8 +17,8 @@ void PrintArray(int* array, int size) {
 }
 
 void PrintMatrix(double* matrix, int size) {
-  for (size_t i = 0; i < size; i++) {
-    for (size_t j = 0; j < size; j++) {
+  for (int i = 0; i < size; i++) {
+    for (int j = 0; j < size; j++) {
       printf("%11f ", matrix[i*size + j]);
     }
     printf("\n");
@@ -27,9 +27,9 @@ void PrintMatrix(double* matrix, int size) {
 }
 
 void PrintSerialTriangleMatrix(double* matrix, int size) {
-  for (size_t i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     int row = ser_pivot_pos[i];
-    for (size_t j = 0; j < size; j++) {
+    for (int j = 0; j < size; j++) {
       printf("%11f ", matrix[row*size + j]);
     }
     printf("\n");
@@ -37,8 +37,8 @@ void PrintSerialTriangleMatrix(double* matrix, int size) {
 }
 
 void PrintExtendedMatrix(double* matrix, double* vector, int size) {
-  for (size_t i = 0; i < size; i++) {
-    for (size_t j = 0; j < size; j++) {
+  for (int i = 0; i < size; i++) {
+    for (int j = 0; j < size; j++) {
       printf("%11f ", matrix[i*size + j]);
     }
     printf(" | %11f\n", vector[i]);
@@ -47,9 +47,9 @@ void PrintExtendedMatrix(double* matrix, double* vector, int size) {
 }
 
 void PrintSerialExtendedTriangleMatrix(double* matrix, double* vector, int size) {
-  for (size_t i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     int row = ser_pivot_pos[i];
-    for (size_t j = 0; j < size; j++) {
+    for (int j = 0; j < size; j++) {
       printf("%11f ", matrix[row*size + j]);
     }
     printf(" | %11f\n", vector[row]);
@@ -58,9 +58,9 @@ void PrintSerialExtendedTriangleMatrix(double* matrix, double* vector, int size)
 }
 
 void PrintParallelExtendedTriangleMatrix(double* matrix, double* vector, int size) {
-  for (size_t i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     int row = par_pivot_pos[i];
-    for (size_t j = 0; j < size; j++) {
+    for (int j = 0; j < size; j++) {
       printf("%11f ", matrix[row*size + j]);
     }
     printf(" | %11f\n", vector[row]);
@@ -69,9 +69,9 @@ void PrintParallelExtendedTriangleMatrix(double* matrix, double* vector, int siz
 }
 
 void PrintParallelTriangleMatrix(double* matrix, int size) {
-  for (size_t i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     int row = par_pivot_pos[i];
-    for (size_t j = 0; j < size; j++) {
+    for (int j = 0; j < size; j++) {
       printf("%11f ", matrix[row*size + j]);
     }
     printf("\n");

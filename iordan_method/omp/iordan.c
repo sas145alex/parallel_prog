@@ -9,7 +9,7 @@
 #include "iordan_serial_logic.c"
 #include "iordan_parallel_logic.c"
 
-#define SIZE 2000
+#define SIZE 6
 #define SINGLE_RESULT (1)
 #define THREAD (4)
 
@@ -27,21 +27,22 @@ int main(int argc, char const *argv[]) {
 
   double start_time, end_time, tick;
 
+  size = SIZE;
+  ser_pivot_pos = (int*) malloc(size * sizeof(int));
+  ser_down_pivot_iter = (int*) malloc(size * sizeof(int));
+  ser_up_pivot_iter = (int*) malloc(size * sizeof(int));
+  par_pivot_pos = (int*) malloc(size * sizeof(int));
+  par_down_pivot_iter = (int*) malloc(size * sizeof(int));
+  par_up_pivot_iter = (int*) malloc(size * sizeof(int));
+  ser_vector = (double*) malloc(size * sizeof(double));
+  ser_matrix = (double*) malloc(size * size * sizeof(double*));
+  par_vector = (double*) malloc(size * sizeof(double));
+  par_matrix = (double*) malloc(size * size * sizeof(double*));
+
+
   if SINGLE_RESULT { // единичный тест
     int t = omp_get_max_threads();
-    printf("t = %d\n",t );
-
-    size = SIZE;
-    ser_pivot_pos = (int*) malloc(size * sizeof(int));
-    ser_down_pivot_iter = (int*) malloc(size * sizeof(int));
-    ser_up_pivot_iter = (int*) malloc(size * sizeof(int));
-    par_pivot_pos = (int*) malloc(size * sizeof(int));
-    par_down_pivot_iter = (int*) malloc(size * sizeof(int));
-    par_up_pivot_iter = (int*) malloc(size * sizeof(int));
-    ser_vector = (double*) malloc(size * sizeof(double));
-    ser_matrix = (double*) malloc(size * size * sizeof(double*));
-    par_vector = (double*) malloc(size * sizeof(double));
-    par_matrix = (double*) malloc(size * size * sizeof(double*));
+    printf("max threads = %d\n", t);
 
     srand(time(NULL));
     for (size_t i = 0; i < size; i++) {
@@ -59,15 +60,18 @@ int main(int argc, char const *argv[]) {
       }
     }
 
-    start_time = omp_get_wtime();
-    SerialCalculation(ser_matrix, ser_vector, size);
-    end_time = omp_get_wtime();
-    printf("%lf\n", end_time - start_time);
+    // start_time = omp_get_wtime();
+    // SerialCalculation(ser_matrix, ser_vector, size);
+    // end_time = omp_get_wtime();
+    // printf("Последовательное %lf\n", end_time - start_time);
 
     start_time = omp_get_wtime();
     ParallelCalculation(par_matrix, par_vector, size);
     end_time = omp_get_wtime();
-    printf("%lf\n", end_time - start_time);
+    printf("Парралельное %lf\n", end_time - start_time);
+
+    // PrintParallelTriangleMatrix(par_matrix, size);
+    PrintParallelExtendedTriangleMatrix(par_matrix, par_vector, size);
   }
   else { // несколько тестов
     int thread_nums_length = sizeof(THREAD_NUMS)/sizeof(int);
@@ -82,16 +86,6 @@ int main(int argc, char const *argv[]) {
       for (int j = 0; j < sizes_length-1; j++) {
         // инициализация
         size = SIZES[j];
-        ser_pivot_pos = (int*) malloc(size * sizeof(int));
-        ser_down_pivot_iter = (int*) malloc(size * sizeof(int));
-        ser_up_pivot_iter = (int*) malloc(size * sizeof(int));
-        par_pivot_pos = (int*) malloc(size * sizeof(int));
-        par_down_pivot_iter = (int*) malloc(size * sizeof(int));
-        par_up_pivot_iter = (int*) malloc(size * sizeof(int));
-        ser_vector = (double*) malloc(size * sizeof(double));
-        ser_matrix = (double*) malloc(size * size * sizeof(double*));
-        par_vector = (double*) malloc(size * sizeof(double));
-        par_matrix = (double*) malloc(size * size * sizeof(double*));
 
         // заполнение
         for (size_t i = 0; i < size; i++) {

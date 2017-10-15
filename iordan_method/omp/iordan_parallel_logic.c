@@ -93,6 +93,6 @@ void ParallelRelaxElimination(double* matrix, double* vector, int size, int* mas
 
 void ParallelCalculation(double* matrix, double* vector, int size){
   ParallelDownElimination(matrix, vector, size, par_down_pivot_iter);
-  ParallelUpElimination(matrix, vector, size, par_up_pivot_iter);
-  ParallelRelaxElimination(matrix, vector, size, par_down_pivot_iter);
+  // ParallelUpElimination(matrix, vector, size, par_up_pivot_iter);
+  // ParallelRelaxElimination(matrix, vector, size, par_down_pivot_iter);
 }
