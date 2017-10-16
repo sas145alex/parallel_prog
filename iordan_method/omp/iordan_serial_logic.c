@@ -1,4 +1,7 @@
 int SerialFindPivotRow (double* matrix, int size, int iter) {
+
+  return iter;
+
   int pivot_row = -1;
   double max_value = 0;
   for (int i = 0; i < size; i++) {

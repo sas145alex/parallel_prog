@@ -2,6 +2,8 @@ int ParallelFindPivotRow (double* matrix, int size, int iter) {
   int pivot_row = -1;
   double max_value = 0;
 
+  // return iter;
+
   #pragma omp parallel
   {
     TThreadPivotRow ThreadPivotRow;
@@ -31,8 +33,10 @@ void ParallelColumnDownElimination(double* matrix, double* vector, int size,
 
   double pivot_value, pivot_factor;
   pivot_value = matrix[pivot_row*size + iter];
+  // printf("Итерация %d\n", iter);
   #pragma omp parallel for private(pivot_factor) schedule(dynamic, 1)
   for (size_t i = 0; i < size; i++) {
+    // printf("\t-> thread = %d\n", omp_get_thread_num());
     if (pivot_mask[i] == -1) {
       pivot_factor = matrix[i*size + iter] / pivot_value;
       for (size_t j = iter; j < size; j++) {
@@ -93,6 +97,6 @@ void ParallelRelaxElimination(double* matrix, double* vector, int size, int* mas
 
 void ParallelCalculation(double* matrix, double* vector, int size){
   ParallelDownElimination(matrix, vector, size, par_down_pivot_iter);
-  // ParallelUpElimination(matrix, vector, size, par_up_pivot_iter);
-  // ParallelRelaxElimination(matrix, vector, size, par_down_pivot_iter);
+  ParallelUpElimination(matrix, vector, size, par_up_pivot_iter);
+  ParallelRelaxElimination(matrix, vector, size, par_down_pivot_iter);
 }
