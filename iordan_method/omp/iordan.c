@@ -3,6 +3,7 @@
 #include <time.h>
 #include <math.h>
 #include <omp.h>
+#include <string.h>
 
 #include "iordan_global_var.c"
 #include "iordan_helpers.c"
@@ -10,8 +11,11 @@
 #include "iordan_parallel_logic.c"
 
 #define SIZE 5
-#define SINGLE_RESULT (1)
 #define THREAD (16)
+
+#define SINGLE_RESULT (0)
+#define MULTIPLE_RESULT (0)
+#define MULTIPLE_RESULT_IN_FILE (1)
 
 int main(int argc, char const *argv[]) {
 
@@ -37,9 +41,9 @@ int main(int argc, char const *argv[]) {
     par_down_pivot_iter = (int*) malloc(size * sizeof(int));
     par_up_pivot_iter = (int*) malloc(size * sizeof(int));
     ser_vector = (double*) malloc(size * sizeof(double));
-    ser_matrix = (double*) malloc(size * size * sizeof(double*));
+    ser_matrix = (double*) malloc(size * size * sizeof(double));
     par_vector = (double*) malloc(size * sizeof(double));
-    par_matrix = (double*) malloc(size * size * sizeof(double*));
+    par_matrix = (double*) malloc(size * size * sizeof(double));
 
 
     omp_set_num_threads(THREAD);
@@ -82,7 +86,8 @@ int main(int argc, char const *argv[]) {
     printf("матраца par после вычислений\n");
     PrintParallelExtendedTriangleMatrix(par_matrix, par_vector, size);
   }
-  else { // несколько тестов
+
+  if MULTIPLE_RESULT { // несколько тестов
     int thread_nums_length = sizeof(THREAD_NUMS)/sizeof(int);
     int sizes_length = sizeof(SIZES)/sizeof(int);
 
@@ -138,6 +143,76 @@ int main(int argc, char const *argv[]) {
       }
     }
   } // вывод таблицы результатов
+
+  if MULTIPLE_RESULT_IN_FILE {
+    FILE *file;
+    file = fopen("test.txt", "w");
+
+    int thread_nums_length = sizeof(THREAD_NUMS)/sizeof(int);
+    int sizes_length = sizeof(SIZES)/sizeof(int);
+
+    fprintf(file, " " );
+    for (size_t i = 0; i < thread_nums_length; i++) {
+      fprintf(file, "%d ", THREAD_NUMS[i]);
+    }
+    fprintf(file, "\n");
+
+    for (int i = 0; i < sizes_length; i++) {
+      size = SIZES[i];
+      ser_pivot_pos = (int*) malloc(size * sizeof(int));
+      ser_down_pivot_iter = (int*) malloc(size * sizeof(int));
+      ser_up_pivot_iter = (int*) malloc(size * sizeof(int));
+      par_pivot_pos = (int*) malloc(size * sizeof(int));
+      par_down_pivot_iter = (int*) malloc(size * sizeof(int));
+      par_up_pivot_iter = (int*) malloc(size * sizeof(int));
+      ser_vector = (double*) malloc(size * sizeof(double));
+      ser_matrix = (double*) malloc(size * size * sizeof(double*));
+      par_vector = (double*) malloc(size * sizeof(double));
+      par_matrix = (double*) malloc(size * size * sizeof(double*));
+
+      printf("Шаг %d из %d\n", i+1, sizes_length);
+      fprintf(file, "%d ", size);
+
+      for (int j = 0; j < thread_nums_length; j++) {
+        int thread_num = THREAD_NUMS[j];
+        omp_set_num_threads(thread_num);
+        srand(time(NULL));
+
+        // заполнение
+        for (size_t k = 0; k < size; k++) {
+          double rand_value = rand() % 100;
+          ser_vector[k] = rand_value;
+          par_vector[k] = rand_value;
+          ser_down_pivot_iter[k] = -1;
+          ser_up_pivot_iter[k] = -1;
+          par_down_pivot_iter[k] = -1;
+          par_up_pivot_iter[k] = -1;
+          for (size_t t = 0; t < size; t++) {
+            double rand_value = rand() % 100;
+            ser_matrix[k*size + t] = rand_value;
+            par_matrix[k*size + t] = rand_value;
+          }
+        }
+
+        // вычисления
+        start_time = omp_get_wtime();
+        ParallelCalculation(par_matrix, par_vector, size);
+        end_time = omp_get_wtime();
+        double par_time = end_time - start_time;
+
+        // fprintf(file, "%7d %7d %11lf\n", size, thread_num, par_time);
+        fprintf(file, "%11lf", par_time);
+      }
+      fprintf(file, "\n");
+    }
+
+    // char *str = "huh\n";
+    // fwrite(str, strlen(str), 1, file);
+
+
+
+    fclose(file);
+  }
 
   return 0;
 }
